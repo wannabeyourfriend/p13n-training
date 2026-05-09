@@ -1,0 +1,30 @@
+run_name: qwen25_7b_instruct_qa_mixed_lastturn_r64_lr1e-4_n1800
+model: /home/2025user/zhou/hf_models/Qwen2.5-7B-Instruct
+data: data/qa_mixed_personamem_prefeval_n1800.jsonl
+output_dir: outputs
+
+max_seq_length: 16384
+load_in_4bit: true
+
+instruction_part: "<|im_start|>user\n"
+response_part: "<|im_start|>assistant\n"
+
+lora:
+  r: 64
+  alpha: 64
+  dropout: 0.0
+
+batch_size: 1
+grad_accum: 8
+epochs: 2
+lr: 1.0e-4
+warmup_ratio: 0.03
+scheduler: cosine
+optim: adamw_8bit
+weight_decay: 0.0
+logging_steps: 1
+save_steps: 100
+save_total_limit: 3
+seed: 42
+
+wandb_project: klab-sft

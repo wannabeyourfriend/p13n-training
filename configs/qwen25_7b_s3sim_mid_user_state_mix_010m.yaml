@@ -1,0 +1,30 @@
+run_name: qwen25_7b_s3sim_mid_user_state_mix_010m
+model: /home/2025user/zhou/hf_models/Qwen2.5-7B-Instruct
+data: data/s3sim_scaling/objectives/s3sim_user_state_mix_010m.jsonl
+output_dir: outputs
+max_seq_length: 16384
+load_in_4bit: true
+loss_mode: assistant_only
+instruction_part: '<|im_start|>user
+
+  '
+response_part: '<|im_start|>assistant
+
+  '
+lora:
+  r: 64
+  alpha: 64
+  dropout: 0.0
+batch_size: 1
+grad_accum: 8
+epochs: 1
+lr: 0.0001
+warmup_ratio: 0.03
+scheduler: cosine
+optim: adamw_8bit
+weight_decay: 0.0
+logging_steps: 1
+save_steps: 500
+save_total_limit: 2
+seed: 42
+wandb_project: klab-s3sim-middle-scaling

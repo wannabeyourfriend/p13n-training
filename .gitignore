@@ -1,0 +1,51 @@
+# Byte-compiled / optimized
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+*.egg
+.eggs/
+build/
+dist/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+
+# Virtualenv
+.venv/
+venv/
+env/
+ENV/
+
+# Editor
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# Bench outputs
+results/
+logs/
+caches/
+*.log
+*.pid
+
+# Data directories — all symlinked to external benchmark sources. We do
+# NOT track symlinks because their target is host-specific; each user
+# recreates them per the README.
+data/*
+!data/.gitkeep
+
+# Credentials
+.env.*
+.env.openai.proposer
+*.key
+.openai_key
+# claude code — ignore local state, keep shared project skills
+.claude/
+.codex/
+AGENTS.md
+CLAUDE.md

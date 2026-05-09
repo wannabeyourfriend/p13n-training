@@ -1,0 +1,31 @@
+run_name: qwen25_7b_s3sim_mid_full_dialogue_010m_fixedqa
+model: /home/2025user/zhou/hf_models/Qwen2.5-7B-Instruct
+data: data/s3sim_scaling/final_sft/s3sim_fixed_qa_sft_900pm_300pref_300tom.jsonl
+output_dir: outputs
+max_seq_length: 16384
+load_in_4bit: true
+loss_mode: assistant_only
+instruction_part: '<|im_start|>user
+
+  '
+response_part: '<|im_start|>assistant
+
+  '
+lora:
+  r: 64
+  alpha: 64
+  dropout: 0.0
+batch_size: 1
+grad_accum: 8
+epochs: 2
+lr: 0.0002
+warmup_ratio: 0.03
+scheduler: cosine
+optim: adamw_8bit
+weight_decay: 0.0
+logging_steps: 1
+save_steps: 100
+save_total_limit: 2
+seed: 42
+wandb_project: klab-s3sim-middle-scaling
+adapter_model: outputs/qwen25_7b_s3sim_mid_full_dialogue_010m/final

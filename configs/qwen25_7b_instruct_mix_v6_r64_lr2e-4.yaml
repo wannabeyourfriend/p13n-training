@@ -1,0 +1,49 @@
+# mix_v6: refines mix_v5 by ADDING the v4 lamp_cls qa_v2 slice (NEW, n=1438).
+#
+# Rationale (from v4 + FFT eval results 2026-04-28):
+#   - v4-7030 (70:30 conv:qa) was the Pareto-optimal LoRA — full PersonaLens
+#     recovery + strong QA performance. We mirror its 70:30 ratio at scale.
+#   - All v4 LoRAs regressed ≥0.012pp on LaMP-QA — direct cause: lamp_cls
+#     was constructed but never rewritten/used. mix_v6 fixes this.
+#   - FFT mix_v5 underperformed LoRA by 16pp on PrefEval cls (87.40% → 71.00%);
+#     LoRA r=64 lr=2e-4 remains the proven recipe for this base + data shape.
+#
+# Composition (n=8244, vs mix_v5 n=6183):
+#   conv (v4 5 slices)               : 1448  17.6%
+#   conv-v1realquery                 : 1240  15.0%
+#   conv-v1pilot                     :  624   7.6%   → 40.2% conv total
+#   qa-prefeval_gen (v4)             : 1442  17.5%
+#   qa-personamem_mcq (v4)           : 1429  17.3%
+#   qa-personamem_mcq-v1pilot (spec) :  623   7.6%
+#   qa-lamp_cls (v4) — NEW           : 1438  17.4%   → 59.8% qa total
+
+run_name: qwen25_7b_instruct_mix_v6_r64_lr2e-4
+model: /home/2025user/zhou/hf_models/Qwen2.5-7B-Instruct
+data: data/mix_v6_conv_qa.parquet
+output_dir: outputs
+
+max_seq_length: 16384
+load_in_4bit: true
+
+instruction_part: "<|im_start|>user\n"
+response_part: "<|im_start|>assistant\n"
+
+lora:
+  r: 64
+  alpha: 64
+  dropout: 0.0
+
+batch_size: 1
+grad_accum: 8
+epochs: 2
+lr: 2.0e-4
+warmup_ratio: 0.03
+scheduler: cosine
+optim: adamw_8bit
+weight_decay: 0.0
+logging_steps: 1
+save_steps: 200
+save_total_limit: 3
+seed: 42
+
+wandb_project: klab-sft-mix-v6

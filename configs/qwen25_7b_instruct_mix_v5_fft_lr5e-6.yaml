@@ -1,0 +1,33 @@
+# Mix v5 — Full Fine-Tuning of Qwen2.5-7B-Instruct
+# Data: 3,312 multi-turn conv (v1 pilot + v1 real-query + v4 5 ctors, exclude no_privilege/no_state/concerning)
+#     + 2,871 QA-v2 items (v4 5 slices × 2 styles, gpt-4o difficulty rewrite)
+# Total: 6,183 samples shuffled
+# Strategy: full fine-tuning (no LoRA), bf16, lr=5e-6 (FFT-safe)
+
+run_name: qwen25_7b_instruct_mix_v5_fft_lr5e-6
+model: /home/2025user/zhou/hf_models/Qwen2.5-7B-Instruct
+data: data/mix_v5_conv_qa.jsonl
+output_dir: outputs
+
+max_seq_length: 16384
+load_in_4bit: false   # FFT requires fp16/bf16
+full_finetuning: true # use unsloth's full_finetuning=True path
+
+instruction_part: "<|im_start|>user\n"
+response_part: "<|im_start|>assistant\n"
+
+# No LoRA — FFT trains the full 7B parameters
+batch_size: 1
+grad_accum: 16  # higher to compensate for FFT memory pressure
+epochs: 1       # FFT is more aggressive — 1 epoch is enough
+lr: 5.0e-6      # FFT-safe lr (1e-5 might overshoot)
+warmup_ratio: 0.05
+scheduler: cosine
+optim: adamw_8bit
+weight_decay: 0.01  # mild regularization for FFT
+logging_steps: 1
+save_steps: 200
+save_total_limit: 2
+seed: 42
+
+wandb_project: klab-sft-mix-v5
